@@ -1,0 +1,30 @@
+version: '3'
+services:
+  frontend:
+    image: my-registry.io/my-application/front:1.0
+    ports:
+      - "80:80"  
+    depends_on:
+      - backend  # Le frontend dépend du backend pour garantir que le backend démarre d'abord
+  backend:
+    image: my-registry.io/my-application/backend:1.0
+    ports:
+      - "5000:5000"  
+    environment:
+      - SPRING_POSTGRES_USERNAME=myapplication
+      - SPRING_POSTGRES_PASSWORD=M3P@ssw0rd!
+      - SPRING_POSTGRES_DB=mydb
+      - SPRING_POSTGRES_URL=postgres://myapplication:M3P%40ssw0rd!@my-db-test.io:5432/mydb
+    depends_on:
+      - db  # Le backend dépend de la base de données
+  db:
+    image: postgres:13  # Image officielle de PostgreSQL
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Persistance des données
+    environment:
+      - POSTGRES_USERNAME=myapplication
+      - POSTGRES_PASSWORD=M3P@ssw0rd!
+      - POSTGRES_DB=mydb
+ 
+volumes:
+  pgdata:
